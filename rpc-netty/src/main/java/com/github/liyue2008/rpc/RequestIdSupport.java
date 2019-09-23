@@ -11,23 +11,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.liyue2008.rpc.server;
+package com.github.liyue2008.rpc;
 
-import com.github.liyue2008.rpc.hello.HelloService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author LiYue
- * Date: 2019/9/20
+ * Date: 2019/9/23
  */
-public class HelloServiceImpl implements HelloService {
-    private static final Logger logger = LoggerFactory.getLogger(HelloServiceImpl.class);
-    @Override
-    public String hello(String name) {
-        logger.info("HelloServiceImpl收到: {}.", name);
-        String ret = "Hello, " + name;
-        logger.info("HelloServiceImpl返回: {}.", ret);
-        return ret;
+class RequestIdSupport {
+    private final static AtomicInteger nextRequestId = new AtomicInteger(0);
+    static int next() {
+        return nextRequestId.getAndIncrement();
     }
 }

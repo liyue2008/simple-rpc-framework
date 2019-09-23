@@ -1,3 +1,16 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.liyue2008.rpc.serialize;
 
 import com.github.liyue2008.rpc.Serializer;
@@ -32,14 +45,16 @@ import java.util.Map;
 public class MetadataSerializer implements Serializer<Metadata> {
 
     @Override
-    public byte[] serialize(Metadata entry) {
-        int size =
-                Short.BYTES +                   // Size of the map                  2 bytes
-                        entry.entrySet().stream()
-                                .mapToInt(this::entrySize).sum();
-        byte [] bytes = new byte[size];
+    public int size(Metadata entry) {
+        return Short.BYTES +                   // Size of the map                  2 bytes
+                entry.entrySet().stream()
+                        .mapToInt(this::entrySize).sum();
+    }
 
-        ByteBuffer buffer = ByteBuffer.wrap(bytes);
+    @Override
+    public void serialize(Metadata entry, byte[] bytes, int offset, int length) {
+
+        ByteBuffer buffer = ByteBuffer.wrap(bytes, offset, length);
         buffer.putShort(toShortSafely(entry.size()));
 
         entry.forEach((k,v) -> {
@@ -55,9 +70,6 @@ public class MetadataSerializer implements Serializer<Metadata> {
             }
 
         });
-
-
-        return bytes;
     }
 
     private int entrySize(Map.Entry<String, List<URI>> e) {
@@ -68,7 +80,7 @@ public class MetadataSerializer implements Serializer<Metadata> {
                 e.getValue().stream() // Value list
                         .mapToInt(uri -> {
                             return Short.BYTES +       // Key string length:               2 bytes
-                                    uri.toASCIIString().getBytes().length;    // Serialized key bytes:   variable length
+                                    uri.toASCIIString().getBytes(StandardCharsets.UTF_8).length;    // Serialized key bytes:   variable length
                         }).sum();
     }
 
@@ -91,12 +103,17 @@ public class MetadataSerializer implements Serializer<Metadata> {
                 int uriLength = buffer.getShort();
                 byte [] uriBytes = new byte [uriLength];
                 buffer.get(uriBytes);
-                URI uri  = URI.create(new String(keyBytes, StandardCharsets.UTF_8));
+                URI uri  = URI.create(new String(uriBytes, StandardCharsets.UTF_8));
                 uriList.add(uri);
             }
             metadata.put(key, uriList);
         }
         return metadata;
+    }
+
+    @Override
+    public byte type() {
+        return Types.TYPE_METADATA;
     }
 
     private short toShortSafely(int v) {

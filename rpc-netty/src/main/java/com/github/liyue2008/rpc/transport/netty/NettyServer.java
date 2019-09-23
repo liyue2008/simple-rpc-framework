@@ -1,5 +1,19 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.liyue2008.rpc.transport.netty;
 
+import com.github.liyue2008.rpc.transport.RequestHandlerRegistry;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -26,11 +40,12 @@ public class NettyServer {
     private EventLoopGroup ioEventGroup;
     private Channel channel;
     private ServerBootstrap serverBootstrap;
+    private final RequestHandlerRegistry requestHandlerRegistry;
 
-
-    public NettyServer(int port) {
+    public NettyServer( RequestHandlerRegistry requestHandlerRegistry, int port) {
         this.port = port;
 
+        this.requestHandlerRegistry = requestHandlerRegistry;
     }
 
     public void start() throws Exception {
@@ -59,7 +74,7 @@ public class NettyServer {
         }
     }
 
-    protected Channel doBind(ServerBootstrap serverBootstrap) throws Exception {
+    private Channel doBind(ServerBootstrap serverBootstrap) throws Exception {
         return serverBootstrap.bind(port)
                 .sync()
                 .channel();
@@ -73,14 +88,14 @@ public class NettyServer {
         }
     }
 
-    protected ChannelHandler newChannelHandlerPipeline() {
+    private ChannelHandler newChannelHandlerPipeline() {
         return new ChannelInitializer<Channel>() {
             @Override
-            protected void initChannel(Channel channel) throws Exception {
+            protected void initChannel(Channel channel) {
                 channel.pipeline()
                         .addLast(new RequestDecoder())
                         .addLast(new ResponseEncoder())
-                        .addLast(new RequestInvocation());
+                        .addLast(new RequestInvocation(requestHandlerRegistry));
             }
         };
     }
@@ -97,4 +112,5 @@ public class NettyServer {
     public Channel getChannel() {
         return channel;
     }
+
 }

@@ -1,3 +1,16 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.liyue2008.rpc.server;
 
 import com.github.liyue2008.rpc.NameService;
@@ -17,7 +30,7 @@ import java.net.URI;
  */
 public class Server {
     private static final Logger logger = LoggerFactory.getLogger(Server.class);
-    public static void main(String [] args) throws IOException {
+    public static void main(String [] args) throws Exception {
 
         String serviceName = HelloService.class.getCanonicalName();
         NameService nameService = ServiceSupport.load(NameService.class);
@@ -26,10 +39,11 @@ public class Server {
         try(RpcAccessPoint rpcAccessPoint = ServiceSupport.load(RpcAccessPoint.class);
             Closeable ignored = rpcAccessPoint.startServer()) {
             logger.info("向RpcAccessPoint注册{}服务...", serviceName);
-            URI uri = rpcAccessPoint.addServiceProvider(helloService);
-            logger.info("服务地址: {}, 向NameService注册...", serviceName);
+            URI uri = rpcAccessPoint.addServiceProvider(helloService, HelloService.class);
+            logger.info("服务名: {}, 向NameService注册...", serviceName);
             nameService.registerService(serviceName, uri);
-            logger.info("开始提供服务，按任何键退出.", serviceName);
+            logger.info("开始提供服务，按任何键退出.");
+            //noinspection ResultOfMethodCallIgnored
             System.in.read();
             logger.info("Bye!");
         }

@@ -1,3 +1,16 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.liyue2008.rpc.client;
 
 import com.github.liyue2008.rpc.NameService;
@@ -17,11 +30,6 @@ import java.net.URI;
 public class Client {
     private static final Logger logger = LoggerFactory.getLogger(Client.class);
     public static void main(String [] args) throws IOException {
-//        final Gson gson = new Gson();
-//        File tmpDirFile = new File(System.getProperty("java.io.tmpdir"));
-//        File nameServiceFile = new File(tmpDirFile, "simple_rpc_name_service");
-//        Map<String/*Class name*/, List<URI>/*Service URI list*/> metadata = readMetadata(nameServiceFile, gson);
-//        String serviceClassName = HelloService.class.getCanonicalName();
         String serviceName = HelloService.class.getCanonicalName();
         NameService nameService = ServiceSupport.load(NameService.class);
         URI uri = nameService.lookupService(serviceName);
@@ -39,9 +47,4 @@ public class Client {
         }
 
     }
-
-//    private static Map<String, List<URI>> readMetadata(File nameServiceFile, Gson gson) throws FileNotFoundException {
-//        Type type = new TypeToken< Map<String, List<URI>>>(){}.getType();
-//        return gson.fromJson(new FileReader(nameServiceFile), type);
-//    }
 }

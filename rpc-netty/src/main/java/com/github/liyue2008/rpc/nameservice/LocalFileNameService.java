@@ -1,3 +1,16 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.liyue2008.rpc.nameservice;
 
 import com.github.liyue2008.rpc.NameService;
@@ -38,15 +51,26 @@ public class LocalFileNameService implements NameService {
             FileChannel fileChannel = raf.getChannel()) {
             FileLock lock = fileChannel.lock();
             try {
-                byte [] bytes = new byte[(int) raf.length()];
-                ByteBuffer buffer = ByteBuffer.wrap(bytes);
-                while (buffer.hasRemaining()) {
-                    fileChannel.read(buffer);
+                int fileLength = (int) raf.length();
+                Metadata metadata;
+                byte[] bytes;
+                if(fileLength > 0) {
+                    bytes = new byte[(int) raf.length()];
+                    ByteBuffer buffer = ByteBuffer.wrap(bytes);
+                    while (buffer.hasRemaining()) {
+                        fileChannel.read(buffer);
+                    }
+
+                    metadata = SerializeSupport.parse(bytes);
+                } else {
+                    metadata = new Metadata();
                 }
-                Metadata metadata = SerializeSupport.parse(bytes);
                 List<URI> uris = metadata.computeIfAbsent(serviceName, k -> new ArrayList<>());
-                uris.add(uri);
+                if(!uris.contains(uri)) {
+                    uris.add(uri);
+                }
                 logger.info(metadata.toString());
+
                 bytes = SerializeSupport.serialize(metadata);
                 fileChannel.truncate(bytes.length);
                 fileChannel.position(0L);
@@ -61,7 +85,7 @@ public class LocalFileNameService implements NameService {
     @Override
     public URI lookupService(String serviceName) throws IOException {
         Metadata metadata;
-        try(RandomAccessFile raf = new RandomAccessFile(file, "r");
+        try(RandomAccessFile raf = new RandomAccessFile(file, "rw");
             FileChannel fileChannel = raf.getChannel()) {
             FileLock lock = fileChannel.lock();
             try {

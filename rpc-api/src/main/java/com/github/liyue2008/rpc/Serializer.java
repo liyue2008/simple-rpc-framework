@@ -1,3 +1,4 @@
+package com.github.liyue2008.rpc;
 /**
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,12 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.liyue2008.rpc;
 
 public interface Serializer<T> {
-    byte [] serialize(T entry);
+    int size(T entry);
+    void serialize(T entry, byte[] bytes, int offset, int length);
     T parse(byte[] bytes, int offset, int length);
     default T parse(byte [] bytes) {
         return parse(bytes, 0, bytes.length);
     }
+    byte type();
 }

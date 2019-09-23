@@ -11,23 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.liyue2008.rpc.server;
-
-import com.github.liyue2008.rpc.hello.HelloService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package com.github.liyue2008.rpc;
 
 /**
  * @author LiYue
- * Date: 2019/9/20
+ * Date: 2019/9/23
  */
-public class HelloServiceImpl implements HelloService {
-    private static final Logger logger = LoggerFactory.getLogger(HelloServiceImpl.class);
-    @Override
-    public String hello(String name) {
-        logger.info("HelloServiceImpl收到: {}.", name);
-        String ret = "Hello, " + name;
-        logger.info("HelloServiceImpl返回: {}.", ret);
-        return ret;
-    }
+public class ServiceTypes {
+    public final static int TYPE_HELLO_SERVICE = 0;
 }

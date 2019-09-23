@@ -15,12 +15,32 @@ package com.github.liyue2008.rpc.transport;
 
 import com.github.liyue2008.rpc.transport.command.Command;
 
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author LiYue
  * Date: 2019/9/20
  */
-public interface Transport {
-    Future<Command> send(Command request);
+public class ResponseFuture {
+    private final Command request;
+    private final CompletableFuture<Command> future;
+    private final long timestamp;
+
+    public ResponseFuture(Command request, CompletableFuture<Command> future) {
+        this.request = request;
+        this.future = future;
+        timestamp = System.nanoTime();
+    }
+
+    Command getRequest() {
+        return request;
+    }
+
+    public CompletableFuture<Command> getFuture() {
+        return future;
+    }
+
+    long getTimestamp() {
+        return timestamp;
+    }
 }
