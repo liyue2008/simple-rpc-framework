@@ -116,6 +116,11 @@ public class MetadataSerializer implements Serializer<Metadata> {
         return Types.TYPE_METADATA;
     }
 
+    @Override
+    public Class<Metadata> getSerializeClass() {
+        return Metadata.class;
+    }
+
     private short toShortSafely(int v) {
         assert v < Short.MAX_VALUE;
         return (short) v;

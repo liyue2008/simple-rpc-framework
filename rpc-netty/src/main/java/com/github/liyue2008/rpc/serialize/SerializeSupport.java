@@ -15,6 +15,9 @@ package com.github.liyue2008.rpc.serialize;
 
 import com.github.liyue2008.rpc.Serializer;
 import com.github.liyue2008.rpc.nameservice.Metadata;
+import com.github.liyue2008.rpc.spi.ServiceSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,12 +26,19 @@ import java.util.Map;
  * @author LiYue
  * Date: 2019/9/20
  */
+@SuppressWarnings("unchecked")
 public class SerializeSupport {
+    private static final Logger logger = LoggerFactory.getLogger(SerializeSupport.class);
     private static Map<Class<?>, Serializer<?>> serializerMap = new HashMap<>();
     private static Map<Integer, Class<?>> typeMap = new HashMap<>();
+
     static {
-        registerType(Types.TYPE_STRING, String.class, new StringSerializer());
-        registerType(Types.TYPE_METADATA, Metadata.class, new MetadataSerializer());
+        for (Serializer serializer : ServiceSupport.loadAll(Serializer.class)) {
+            registerType(serializer.type(), serializer.getSerializeClass(), serializer);
+            logger.info("Found serializer, class: {}, type: {}.",
+                    serializer.getSerializeClass().getCanonicalName(),
+                    serializer.type());
+        }
     }
     private static int parseEntryType(byte[] buffer) {
         return buffer[0];

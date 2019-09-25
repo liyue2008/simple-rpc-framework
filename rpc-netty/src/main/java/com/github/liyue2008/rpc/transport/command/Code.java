@@ -23,13 +23,7 @@ import java.util.Map;
 public enum Code {
 
     SUCCESS(0, "SUCCESS"),
-
-    //001 ~ 100 Common
-    UNKNOWN_ERROR(1, "UNKNOWN_ERROR"),
-    EXCEPTION(2, "EXCEPTION"),
-    TRANSPORT_FAILED(3, "TRANSPORT_FAILED"),
-    SERVER_BUSY(4, "SERVER_BUSY"),
-    TIMEOUT(5, "TIMEOUT");
+    UNKNOWN_ERROR(1, "UNKNOWN_ERROR");
 
     private static Map<Integer, Code> codes = new HashMap<>();
     private int code;

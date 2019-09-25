@@ -43,4 +43,9 @@ public class StringSerializer implements Serializer<String> {
         return Types.TYPE_STRING;
     }
 
+    @Override
+    public Class<String> getSerializeClass() {
+        return String.class;
+    }
+
 }
