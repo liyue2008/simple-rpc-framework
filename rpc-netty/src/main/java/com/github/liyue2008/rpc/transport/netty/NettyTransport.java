@@ -20,15 +20,13 @@ import com.github.liyue2008.rpc.transport.command.Command;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 
-import java.io.Closeable;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 /**
  * @author LiYue
  * Date: 2019/9/20
  */
-public class NettyTransport implements Transport, Closeable {
+public class NettyTransport implements Transport {
     private final Channel channel;
     private final InFlightRequests inFlightRequests;
 
@@ -41,17 +39,22 @@ public class NettyTransport implements Transport, Closeable {
 
 
     @Override
-    public  Future<Command> send(Command request) {
+    public  CompletableFuture<Command> send(Command request) {
+        // 构建返回值
         CompletableFuture<Command> completableFuture = new CompletableFuture<>();
         try {
-            inFlightRequests.put(new ResponseFuture(request, completableFuture));
+            // 将在途请求放到inFlightRequests中
+            inFlightRequests.put(new ResponseFuture(request.getHeader().getRequestId(), completableFuture));
+            // 发送命令
             channel.writeAndFlush(request).addListener((ChannelFutureListener) channelFuture -> {
+                // 处理发送失败的情况
                 if (!channelFuture.isSuccess()) {
                     completableFuture.completeExceptionally(channelFuture.cause());
                     channel.close();
                 }
             });
         } catch (Throwable t) {
+            // 处理发送异常
             inFlightRequests.remove(request.getHeader().getRequestId());
             completableFuture.completeExceptionally(t);
         }
@@ -59,8 +62,4 @@ public class NettyTransport implements Transport, Closeable {
     }
 
 
-    @Override
-    public void close()  {
-        channel.close();
-    }
 }

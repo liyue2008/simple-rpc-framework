@@ -14,7 +14,6 @@
 package com.github.liyue2008.rpc.transport.netty;
 
 import com.github.liyue2008.rpc.transport.command.Header;
-import com.github.liyue2008.rpc.transport.command.RequestHeader;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -26,7 +25,7 @@ public class RequestDecoder extends CommandDecoder {
 
     @Override
     protected Header decodeHeader(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) {
-        return new RequestHeader(
+        return new Header(
                 byteBuf.readInt(),
                 byteBuf.readInt(),
                 byteBuf.readInt()

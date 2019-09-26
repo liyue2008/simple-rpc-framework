@@ -39,7 +39,7 @@ public class InFlightRequests implements Closeable {
 
     public void put(ResponseFuture responseFuture) throws InterruptedException, TimeoutException {
         if(semaphore.tryAcquire(TIMEOUT_SEC, TimeUnit.SECONDS)) {
-            futureMap.put(responseFuture.getRequest().getHeader().getRequestId(), responseFuture);
+            futureMap.put(responseFuture.getRequestId(), responseFuture);
         } else {
             throw new TimeoutException();
         }

@@ -18,7 +18,7 @@ import com.github.liyue2008.rpc.serialize.SerializeSupport;
 import com.github.liyue2008.rpc.transport.Transport;
 import com.github.liyue2008.rpc.transport.command.Code;
 import com.github.liyue2008.rpc.transport.command.Command;
-import com.github.liyue2008.rpc.transport.command.RequestHeader;
+import com.github.liyue2008.rpc.transport.command.Header;
 import com.github.liyue2008.rpc.transport.command.ResponseHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ public class HelloServiceStub implements HelloService {
 
     @Override
     public String hello(String name) {
-        RequestHeader header = new RequestHeader(ServiceTypes.TYPE_HELLO_SERVICE, 1, RequestIdSupport.next());
+        Header header = new Header(ServiceTypes.TYPE_HELLO_SERVICE, 1, RequestIdSupport.next());
         byte [] payload = SerializeSupport.serialize(name);
         Command requestCommand = new Command(header, payload);
         try {

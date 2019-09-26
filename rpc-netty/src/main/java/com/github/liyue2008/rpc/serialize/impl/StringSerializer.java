@@ -11,9 +11,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.liyue2008.rpc.serialize;
+package com.github.liyue2008.rpc.serialize.impl;
 
-import com.github.liyue2008.rpc.Serializer;
+import com.github.liyue2008.rpc.serialize.Serializer;
 
 import java.nio.charset.StandardCharsets;
 

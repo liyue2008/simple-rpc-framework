@@ -14,15 +14,14 @@
 package com.github.liyue2008.rpc;
 
 import com.github.liyue2008.rpc.hello.HelloService;
-import com.github.liyue2008.rpc.nameservice.LocalFileNameService;
+import com.github.liyue2008.rpc.spi.ServiceSupport;
 import com.github.liyue2008.rpc.transport.RequestHandler;
 import com.github.liyue2008.rpc.transport.RequestHandlerRegistry;
 import com.github.liyue2008.rpc.transport.Transport;
-import com.github.liyue2008.rpc.transport.netty.NettyClient;
-import com.github.liyue2008.rpc.transport.netty.NettyServer;
+import com.github.liyue2008.rpc.transport.TransportClient;
+import com.github.liyue2008.rpc.transport.TransportServer;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.Map;
@@ -37,8 +36,8 @@ public class NettyRpcAccessPoint implements RpcAccessPoint {
     private final String host = "localhost";
     private final int port = 9999;
     private final URI uri = URI.create("rpc://" + host + ":" + port);
-    private NettyServer server = null;
-    private NettyClient client = new NettyClient();
+    private TransportServer server = null;
+    private TransportClient client = ServiceSupport.load(TransportClient.class);
     private final Map<URI, Transport> clientMap = new ConcurrentHashMap<>();
 
     @SuppressWarnings("unchecked")
@@ -75,8 +74,8 @@ public class NettyRpcAccessPoint implements RpcAccessPoint {
     @Override
     public synchronized Closeable startServer() throws Exception {
         if (null == server) {
-            server = new NettyServer(RequestHandlerRegistry.getInstance(), port);
-            server.start();
+            server = ServiceSupport.load(TransportServer.class);
+            server.start(RequestHandlerRegistry.getInstance(), port);
 
         }
         return () -> {

@@ -15,12 +15,17 @@ package com.github.liyue2008.rpc.transport;
 
 import com.github.liyue2008.rpc.transport.command.Command;
 
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author LiYue
  * Date: 2019/9/20
  */
 public interface Transport {
-    Future<Command> send(Command request);
+    /**
+     * 发送请求命令
+     * @param request 请求命令
+     * @return 返回值是一个Future，Future
+     */
+    CompletableFuture<Command> send(Command request);
 }

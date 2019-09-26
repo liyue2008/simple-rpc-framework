@@ -13,8 +13,6 @@
  */
 package com.github.liyue2008.rpc.serialize;
 
-import com.github.liyue2008.rpc.Serializer;
-import com.github.liyue2008.rpc.nameservice.Metadata;
 import com.github.liyue2008.rpc.spi.ServiceSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +27,8 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class SerializeSupport {
     private static final Logger logger = LoggerFactory.getLogger(SerializeSupport.class);
-    private static Map<Class<?>, Serializer<?>> serializerMap = new HashMap<>();
-    private static Map<Integer, Class<?>> typeMap = new HashMap<>();
+    private static Map<Class<?>/*序列化对象类型*/, Serializer<?>/*序列化实现*/> serializerMap = new HashMap<>();
+    private static Map<Byte/*序列化实现类型*/, Class<?>/*序列化对象类型*/> typeMap = new HashMap<>();
 
     static {
         for (Serializer serializer : ServiceSupport.loadAll(Serializer.class)) {
@@ -40,17 +38,13 @@ public class SerializeSupport {
                     serializer.type());
         }
     }
-    private static int parseEntryType(byte[] buffer) {
+    private static byte parseEntryType(byte[] buffer) {
         return buffer[0];
     }
-    private static <E> void registerType(int type, Class<E> eClass, Serializer<E> serializer) {
+    private static <E> void registerType(byte type, Class<E> eClass, Serializer<E> serializer) {
         serializerMap.put(eClass, serializer);
         typeMap.put(type, eClass);
     }
-    public static  <E> E parse(byte [] buffer, Class<E> eClass) {
-        return parse(buffer, 0, buffer.length, eClass);
-    }
-
     @SuppressWarnings("unchecked")
     private static  <E> E parse(byte [] buffer, int offset, int length, Class<E> eClass) {
         Object entry =  serializerMap.get(eClass).parse(buffer, offset, length);
@@ -65,7 +59,7 @@ public class SerializeSupport {
     }
 
     private static  <E> E parse(byte[] buffer, int offset, int length) {
-        int type = parseEntryType(buffer);
+        byte type = parseEntryType(buffer);
         @SuppressWarnings("unchecked")
         Class<E> eClass = (Class<E> )typeMap.get(type);
         if(null == eClass) {

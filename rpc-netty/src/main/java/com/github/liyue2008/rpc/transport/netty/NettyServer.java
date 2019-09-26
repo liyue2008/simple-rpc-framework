@@ -14,6 +14,7 @@
 package com.github.liyue2008.rpc.transport.netty;
 
 import com.github.liyue2008.rpc.transport.RequestHandlerRegistry;
+import com.github.liyue2008.rpc.transport.TransportServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -33,22 +34,18 @@ import org.slf4j.LoggerFactory;
  * @author LiYue
  * Date: 2019/9/20
  */
-public class NettyServer {
+public class NettyServer implements TransportServer {
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
-    private final int port;
+    private int port;
     private EventLoopGroup acceptEventGroup;
     private EventLoopGroup ioEventGroup;
     private Channel channel;
-    private ServerBootstrap serverBootstrap;
-    private final RequestHandlerRegistry requestHandlerRegistry;
+    private RequestHandlerRegistry requestHandlerRegistry;
 
-    public NettyServer( RequestHandlerRegistry requestHandlerRegistry, int port) {
+    @Override
+    public void start(RequestHandlerRegistry requestHandlerRegistry, int port) throws Exception {
         this.port = port;
-
         this.requestHandlerRegistry = requestHandlerRegistry;
-    }
-
-    public void start() throws Exception {
         EventLoopGroup acceptEventGroup = newEventLoopGroup();
         EventLoopGroup ioEventGroup = newEventLoopGroup();
         ChannelHandler channelHandlerPipeline = newChannelHandlerPipeline();
@@ -57,11 +54,11 @@ public class NettyServer {
 
         this.acceptEventGroup = acceptEventGroup;
         this.ioEventGroup = ioEventGroup;
-        this.serverBootstrap = serverBootstrap;
         this.channel = channel;
 
     }
 
+    @Override
     public void stop() {
         if (acceptEventGroup != null) {
             acceptEventGroup.shutdownGracefully();
@@ -109,8 +106,5 @@ public class NettyServer {
         return serverBootstrap;
     }
 
-    public Channel getChannel() {
-        return channel;
-    }
 
 }

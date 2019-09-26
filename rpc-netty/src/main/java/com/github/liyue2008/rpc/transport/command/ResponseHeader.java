@@ -19,10 +19,7 @@ import java.nio.charset.StandardCharsets;
  * @author LiYue
  * Date: 2019/9/20
  */
-public class ResponseHeader implements Header {
-    private int requestId;
-    private int version;
-    private int type;
+public class ResponseHeader extends Header {
     private int code;
     private String error;
 
@@ -35,48 +32,18 @@ public class ResponseHeader implements Header {
     }
 
     public ResponseHeader( int type, int version, int requestId , int code, String error) {
-        this.requestId = requestId;
-        this.version = version;
-        this.type = type;
+        super(type, version, requestId);
         this.code = code;
         this.error = error;
     }
 
-    @Override
-    public int getRequestId() {
-        return requestId;
-    }
 
-    @Override
-    public void setRequestId(int requestId) {
-        this.requestId = requestId;
-    }
-
-    @Override
-    public int getVersion() {
-        return version;
-    }
-
-    @Override
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    @Override
-    public int getType() {
-        return type;
-    }
 
     @Override
     public int length() {
         return Integer.BYTES + Integer.BYTES + Integer.BYTES + Integer.BYTES +
                 Integer.BYTES +
                 (error == null ? 0 : error.getBytes(StandardCharsets.UTF_8).length);
-    }
-
-    @Override
-    public void setType(int type) {
-        this.type = type;
     }
 
     public int getCode() {

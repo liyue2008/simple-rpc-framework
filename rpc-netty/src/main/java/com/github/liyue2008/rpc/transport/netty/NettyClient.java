@@ -15,6 +15,7 @@ package com.github.liyue2008.rpc.transport.netty;
 
 import com.github.liyue2008.rpc.transport.InFlightRequests;
 import com.github.liyue2008.rpc.transport.Transport;
+import com.github.liyue2008.rpc.transport.TransportClient;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -29,18 +30,20 @@ import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-import java.io.Closeable;
 import java.net.SocketAddress;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
  * @author LiYue
  * Date: 2019/9/20
  */
-public class NettyClient implements Closeable {
+public class NettyClient implements TransportClient {
     private EventLoopGroup ioEventGroup;
     private Bootstrap bootstrap;
     private final InFlightRequests inFlightRequests;
+    private List<Channel> channels = new LinkedList<>();
 
     public NettyClient() {
         inFlightRequests = new InFlightRequests();
@@ -55,6 +58,7 @@ public class NettyClient implements Closeable {
         return bootstrap;
     }
 
+    @Override
     public Transport createTransport(SocketAddress address, long connectionTimeout) throws InterruptedException, TimeoutException {
         return new NettyTransport(createChannel(address, connectionTimeout), inFlightRequests);
     }
@@ -80,6 +84,7 @@ public class NettyClient implements Closeable {
             if (channel == null || !channel.isActive()) {
                 throw new IllegalStateException();
             }
+            channels.add(channel);
             return channel;
     }
     private ChannelHandler newChannelHandlerPipeline() {
@@ -105,6 +110,11 @@ public class NettyClient implements Closeable {
 
     @Override
     public void close() {
+        for (Channel channel : channels) {
+            if(null != channel) {
+                channel.close();
+            }
+        }
         if (ioEventGroup != null) {
             ioEventGroup.shutdownGracefully();
         }

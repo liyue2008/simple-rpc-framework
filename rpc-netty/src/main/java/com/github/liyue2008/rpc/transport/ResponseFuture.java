@@ -22,18 +22,18 @@ import java.util.concurrent.CompletableFuture;
  * Date: 2019/9/20
  */
 public class ResponseFuture {
-    private final Command request;
+    private final int requestId;
     private final CompletableFuture<Command> future;
     private final long timestamp;
 
-    public ResponseFuture(Command request, CompletableFuture<Command> future) {
-        this.request = request;
+    public ResponseFuture(int requestId, CompletableFuture<Command> future) {
+        this.requestId = requestId;
         this.future = future;
         timestamp = System.nanoTime();
     }
 
-    Command getRequest() {
-        return request;
+    public int getRequestId() {
+        return requestId;
     }
 
     public CompletableFuture<Command> getFuture() {

@@ -16,7 +16,7 @@ package com.github.liyue2008.rpc.transport.netty;
 import com.github.liyue2008.rpc.transport.RequestHandler;
 import com.github.liyue2008.rpc.transport.RequestHandlerRegistry;
 import com.github.liyue2008.rpc.transport.command.Command;
-import com.github.liyue2008.rpc.transport.command.RequestHeader;
+import com.github.liyue2008.rpc.transport.command.Header;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
@@ -40,7 +40,7 @@ public class RequestInvocation extends SimpleChannelInboundHandler<Command> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Command request) throws Exception {
-        if(request.getHeader() instanceof RequestHeader) {
+        if(request.getHeader() instanceof Header) {
             RequestHandler handler = requestHandlerRegistry.get(request.getHeader().getType());
             if(null != handler) {
                 Command response = handler.handle(request);
