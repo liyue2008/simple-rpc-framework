@@ -13,7 +13,8 @@
  */
 package com.github.liyue2008.rpc;
 
-import com.github.liyue2008.rpc.hello.HelloService;
+import com.github.liyue2008.rpc.client.ServiceTypes;
+import com.github.liyue2008.rpc.client.StubFactory;
 import com.github.liyue2008.rpc.spi.ServiceSupport;
 import com.github.liyue2008.rpc.transport.RequestHandler;
 import com.github.liyue2008.rpc.transport.RequestHandlerRegistry;
@@ -39,17 +40,11 @@ public class NettyRpcAccessPoint implements RpcAccessPoint {
     private TransportServer server = null;
     private TransportClient client = ServiceSupport.load(TransportClient.class);
     private final Map<URI, Transport> clientMap = new ConcurrentHashMap<>();
-
-    @SuppressWarnings("unchecked")
+    private final StubFactory stubFactory = ServiceSupport.load(StubFactory.class);
     @Override
     public <T> T getRemoteService(URI uri, Class<T> serviceClass) {
-
         Transport transport = clientMap.computeIfAbsent(uri, this::createTransport);
-        if(HelloService.class.getCanonicalName().equals(serviceClass.getCanonicalName())) {
-            return (T) new HelloServiceStub(transport);
-        }
-
-        throw new IllegalArgumentException(String.format("Unsupported service type: %s!", serviceClass.getCanonicalName()));
+        return stubFactory.createStub(transport, serviceClass);
     }
 
     private Transport createTransport(URI uri) {
@@ -61,7 +56,7 @@ public class NettyRpcAccessPoint implements RpcAccessPoint {
     }
     @Override
     public synchronized <T> URI addServiceProvider(T service, Class<T> serviceClass) {
-        RequestHandler requestHandler = RequestHandlerRegistry.getInstance().get(serviceClass.getCanonicalName());
+        RequestHandler requestHandler = RequestHandlerRegistry.getInstance().get(ServiceTypes.TYPE_RPC_REQUEST);
 
         if (null != requestHandler) {
             requestHandler.addServiceProvider(service);

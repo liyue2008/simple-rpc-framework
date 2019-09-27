@@ -23,7 +23,8 @@ import java.util.Map;
 public enum Code {
 
     SUCCESS(0, "SUCCESS"),
-    UNKNOWN_ERROR(1, "UNKNOWN_ERROR");
+    NO_PROVIDER(-2, "NO_PROVIDER"),
+    UNKNOWN_ERROR(-1, "UNKNOWN_ERROR");
 
     private static Map<Integer, Code> codes = new HashMap<>();
     private int code;

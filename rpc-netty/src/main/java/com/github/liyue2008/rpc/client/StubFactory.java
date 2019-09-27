@@ -11,14 +11,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.liyue2008.rpc.serialize.impl;
+package com.github.liyue2008.rpc.client;
+
+import com.github.liyue2008.rpc.transport.Transport;
 
 /**
  * @author LiYue
- * Date: 2019/9/20
+ * Date: 2019/9/27
  */
-class Types {
-    final static int TYPE_STRING = 0;
-    final static int TYPE_METADATA = 100;
-    final static int TYPE_RPC_REQUEST = 101;
+public interface StubFactory {
+    <T> T createStub(Transport transport, Class<T> serviceClass);
 }

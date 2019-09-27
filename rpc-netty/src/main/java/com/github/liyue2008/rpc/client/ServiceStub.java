@@ -11,12 +11,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.liyue2008.rpc;
+package com.github.liyue2008.rpc.client;
+
+import com.github.liyue2008.rpc.transport.Transport;
 
 /**
  * @author LiYue
- * Date: 2019/9/23
+ * Date: 2019/9/27
  */
-public class ServiceTypes {
-    public final static int TYPE_HELLO_SERVICE = 0;
+public interface ServiceStub {
+    void setTransport(Transport transport);
 }

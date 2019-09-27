@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.liyue2008.rpc;
+package com.github.liyue2008.rpc.client;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,9 +19,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author LiYue
  * Date: 2019/9/23
  */
-class RequestIdSupport {
+public class RequestIdSupport {
     private final static AtomicInteger nextRequestId = new AtomicInteger(0);
-    static int next() {
+    public static int next() {
         return nextRequestId.getAndIncrement();
     }
 }

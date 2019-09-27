@@ -11,14 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.liyue2008.rpc.serialize.impl;
+package com.github.liyue2008.rpc.client;
 
 /**
  * @author LiYue
- * Date: 2019/9/20
+ * Date: 2019/9/23
  */
-class Types {
-    final static int TYPE_STRING = 0;
-    final static int TYPE_METADATA = 100;
-    final static int TYPE_RPC_REQUEST = 101;
+public class ServiceTypes {
+    public final static int TYPE_RPC_REQUEST = 0;
 }

@@ -21,7 +21,6 @@ import com.github.liyue2008.rpc.transport.command.Command;
  */
 public interface RequestHandler {
     Command handle(Command requestCommand);
-    String className();
     int type();
     void addServiceProvider(Object serviceProvider);
 }

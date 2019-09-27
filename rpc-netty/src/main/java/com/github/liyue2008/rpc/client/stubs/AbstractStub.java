@@ -11,42 +11,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.liyue2008.rpc;
+package com.github.liyue2008.rpc.client.stubs;
 
-import com.github.liyue2008.rpc.hello.HelloService;
+import com.github.liyue2008.rpc.client.RequestIdSupport;
+import com.github.liyue2008.rpc.client.ServiceStub;
+import com.github.liyue2008.rpc.client.ServiceTypes;
 import com.github.liyue2008.rpc.serialize.SerializeSupport;
 import com.github.liyue2008.rpc.transport.Transport;
 import com.github.liyue2008.rpc.transport.command.Code;
 import com.github.liyue2008.rpc.transport.command.Command;
 import com.github.liyue2008.rpc.transport.command.Header;
 import com.github.liyue2008.rpc.transport.command.ResponseHeader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutionException;
 
 /**
  * @author LiYue
- * Date: 2019/9/23
+ * Date: 2019/9/27
  */
-public class HelloServiceStub implements HelloService {
-    private static final Logger logger = LoggerFactory.getLogger(HelloServiceStub.class);
-    private final Transport transport;
+public abstract class AbstractStub implements ServiceStub {
+    protected Transport transport;
 
-    HelloServiceStub(Transport transport) {
-        this.transport = transport;
-    }
-
-    @Override
-    public String hello(String name) {
-        Header header = new Header(ServiceTypes.TYPE_HELLO_SERVICE, 1, RequestIdSupport.next());
-        byte [] payload = SerializeSupport.serialize(name);
+    protected byte [] invokeRemote(RpcRequest request) {
+        Header header = new Header(ServiceTypes.TYPE_RPC_REQUEST, 1, RequestIdSupport.next());
+        byte [] payload = SerializeSupport.serialize(request);
         Command requestCommand = new Command(header, payload);
         try {
             Command responseCommand = transport.send(requestCommand).get();
             ResponseHeader responseHeader = (ResponseHeader) responseCommand.getHeader();
             if(responseHeader.getCode() == Code.SUCCESS.getCode()) {
-                return SerializeSupport.parse(responseCommand.getPayload());
+                return responseCommand.getPayload();
             } else {
                 throw new Exception(responseHeader.getError());
             }
@@ -56,5 +50,10 @@ public class HelloServiceStub implements HelloService {
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void setTransport(Transport transport) {
+        this.transport = transport;
     }
 }

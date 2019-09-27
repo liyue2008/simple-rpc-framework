@@ -28,7 +28,6 @@ import java.util.Map;
 public class RequestHandlerRegistry {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandlerRegistry.class);
     private Map<Integer, RequestHandler> handlerMap = new HashMap<>();
-    private Map<String, RequestHandler> classMap = new HashMap<>();
     private static RequestHandlerRegistry instance = null;
     public static RequestHandlerRegistry getInstance() {
         if (null == instance) {
@@ -41,14 +40,10 @@ public class RequestHandlerRegistry {
         Collection<RequestHandler> requestHandlers = ServiceSupport.loadAll(RequestHandler.class);
         for (RequestHandler requestHandler : requestHandlers) {
             handlerMap.put(requestHandler.type(), requestHandler);
-            classMap.put(requestHandler.className(), requestHandler);
             logger.info("Load request handler, type: {}, class: {}.", requestHandler.type(), requestHandler.getClass().getCanonicalName());
         }
     }
 
-    public RequestHandler get(String classname) {
-        return classMap.get(classname);
-    }
     public RequestHandler get(int type) {
         return handlerMap.get(type);
     }

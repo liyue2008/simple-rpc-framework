@@ -1,1 +1,1 @@
-com.github.liyue2008.rpc.transport.HelloRequestHandler
+com.github.liyue2008.rpc.transport.RpcRequestHandler

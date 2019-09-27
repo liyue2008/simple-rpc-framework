@@ -30,6 +30,7 @@ public class ServiceSupport {
                 .findFirst().orElseThrow(ServiceLoadException::new);
     }
     public static <S> Collection<S> loadAll(Class<S> service) {
+
         return StreamSupport.
                 stream(ServiceLoader.load(service).spliterator(), false).collect(Collectors.toList());
     }
