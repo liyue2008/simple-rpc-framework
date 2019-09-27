@@ -94,7 +94,7 @@ public class LocalFileNameService implements NameService {
                 while (buffer.hasRemaining()) {
                     fileChannel.read(buffer);
                 }
-                metadata = SerializeSupport.parse(bytes);
+                metadata = bytes.length == 0? new Metadata(): SerializeSupport.parse(bytes);
                 logger.info(metadata.toString());
             } finally {
                 lock.release();
