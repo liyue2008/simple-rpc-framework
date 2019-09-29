@@ -13,10 +13,9 @@
  */
 package com.github.liyue2008.rpc;
 
-import com.github.liyue2008.rpc.client.ServiceTypes;
 import com.github.liyue2008.rpc.client.StubFactory;
+import com.github.liyue2008.rpc.server.RpcRequestHandler;
 import com.github.liyue2008.rpc.spi.ServiceSupport;
-import com.github.liyue2008.rpc.transport.RequestHandler;
 import com.github.liyue2008.rpc.transport.RequestHandlerRegistry;
 import com.github.liyue2008.rpc.transport.Transport;
 import com.github.liyue2008.rpc.transport.TransportClient;
@@ -41,6 +40,13 @@ public class NettyRpcAccessPoint implements RpcAccessPoint {
     private TransportClient client = ServiceSupport.load(TransportClient.class);
     private final Map<URI, Transport> clientMap = new ConcurrentHashMap<>();
     private final StubFactory stubFactory = ServiceSupport.load(StubFactory.class);
+    private final RpcRequestHandler rpcRequestHandler;
+
+    public NettyRpcAccessPoint() {
+        rpcRequestHandler = new RpcRequestHandler();
+        RequestHandlerRegistry.getInstance().addRequestHandler(rpcRequestHandler);
+    }
+
     @Override
     public <T> T getRemoteService(URI uri, Class<T> serviceClass) {
         Transport transport = clientMap.computeIfAbsent(uri, this::createTransport);
@@ -56,14 +62,8 @@ public class NettyRpcAccessPoint implements RpcAccessPoint {
     }
     @Override
     public synchronized <T> URI addServiceProvider(T service, Class<T> serviceClass) {
-        RequestHandler requestHandler = RequestHandlerRegistry.getInstance().get(ServiceTypes.TYPE_RPC_REQUEST);
-
-        if (null != requestHandler) {
-            requestHandler.addServiceProvider(service);
-            return uri;
-        } else {
-            throw new RuntimeException(String.format("No request handler of service :%s!", serviceClass.getCanonicalName()));
-        }
+        rpcRequestHandler.addServiceProvider(service);
+        return uri;
     }
 
     @Override

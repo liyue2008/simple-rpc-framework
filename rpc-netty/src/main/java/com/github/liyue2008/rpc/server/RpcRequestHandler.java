@@ -11,11 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.liyue2008.rpc.transport;
+package com.github.liyue2008.rpc.server;
 
 import com.github.liyue2008.rpc.client.ServiceTypes;
 import com.github.liyue2008.rpc.client.stubs.RpcRequest;
 import com.github.liyue2008.rpc.serialize.SerializeSupport;
+import com.github.liyue2008.rpc.transport.RequestHandler;
 import com.github.liyue2008.rpc.transport.command.Code;
 import com.github.liyue2008.rpc.transport.command.Command;
 import com.github.liyue2008.rpc.transport.command.Header;
@@ -31,7 +32,7 @@ import java.util.List;
  * @author LiYue
  * Date: 2019/9/23
  */
-public class RpcRequestHandler implements RequestHandler {
+public class RpcRequestHandler implements RequestHandler, ServiceProviderRegistry {
     private static final Logger logger = LoggerFactory.getLogger(RpcRequestHandler.class);
     private List<Object> serviceProviders = new LinkedList<>();
 
@@ -65,5 +66,6 @@ public class RpcRequestHandler implements RequestHandler {
     @Override
     public void addServiceProvider(Object serviceProvider) {
         serviceProviders.add(serviceProvider);
+        logger.info("Add service provider: {}.", serviceProvider.getClass().getCanonicalName());
     }
 }
