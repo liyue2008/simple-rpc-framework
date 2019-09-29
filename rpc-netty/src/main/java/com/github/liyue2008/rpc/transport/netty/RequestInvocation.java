@@ -40,23 +40,21 @@ public class RequestInvocation extends SimpleChannelInboundHandler<Command> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Command request) throws Exception {
-        if(request.getHeader() instanceof Header) {
-            RequestHandler handler = requestHandlerRegistry.get(request.getHeader().getType());
-            if(null != handler) {
-                Command response = handler.handle(request);
-                if(null != response) {
-                    channelHandlerContext.writeAndFlush(response).addListener((ChannelFutureListener) channelFuture -> {
-                        if (!channelFuture.isSuccess()) {
-                            logger.warn("Write response failed!", channelFuture.cause());
-                            channelHandlerContext.channel().close();
-                        }
-                    });
-                }
+        RequestHandler handler = requestHandlerRegistry.get(request.getHeader().getType());
+        if(null != handler) {
+            Command response = handler.handle(request);
+            if(null != response) {
+                channelHandlerContext.writeAndFlush(response).addListener((ChannelFutureListener) channelFuture -> {
+                    if (!channelFuture.isSuccess()) {
+                        logger.warn("Write response failed!", channelFuture.cause());
+                        channelHandlerContext.channel().close();
+                    }
+                });
             } else {
-                throw new Exception(String.format("No handler for request with type: %d!", request.getHeader().getType()));
+                logger.warn("Response is null!");
             }
         } else {
-            throw new Exception(String.format("Invalid header type: %s!", request.getHeader().getClass().getCanonicalName()));
+            throw new Exception(String.format("No handler for request with type: %d!", request.getHeader().getType()));
         }
     }
 
