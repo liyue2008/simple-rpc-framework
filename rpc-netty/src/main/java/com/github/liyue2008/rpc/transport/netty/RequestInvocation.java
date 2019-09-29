@@ -16,7 +16,6 @@ package com.github.liyue2008.rpc.transport.netty;
 import com.github.liyue2008.rpc.transport.RequestHandler;
 import com.github.liyue2008.rpc.transport.RequestHandlerRegistry;
 import com.github.liyue2008.rpc.transport.command.Command;
-import com.github.liyue2008.rpc.transport.command.Header;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
