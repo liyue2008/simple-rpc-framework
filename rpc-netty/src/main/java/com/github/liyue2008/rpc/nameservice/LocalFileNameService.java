@@ -47,7 +47,11 @@ public class LocalFileNameService implements NameService {
 
     @Override
     public void connect(URI nameServiceUri) {
-        file = new File(nameServiceUri);
+        if(schemes.contains(nameServiceUri.getScheme())) {
+            file = new File(nameServiceUri);
+        } else {
+            throw new RuntimeException("Unsupported scheme!");
+        }
     }
 
     @Override

@@ -24,8 +24,15 @@ import java.util.Collection;
  */
 public interface NameService {
 
+    /**
+     * 所有支持的协议
+     */
     Collection<String> supportedSchemes();
 
+    /**
+     * 连接注册中心
+     * @param nameServiceUri 注册中心地址
+     */
     void connect(URI nameServiceUri);
     /**
      * 注册服务

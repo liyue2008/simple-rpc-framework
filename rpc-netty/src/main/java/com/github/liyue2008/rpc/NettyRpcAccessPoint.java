@@ -59,22 +59,8 @@ public class NettyRpcAccessPoint implements RpcAccessPoint {
     }
     @Override
     public synchronized <T> URI addServiceProvider(T service, Class<T> serviceClass) {
-        serviceProviderRegistry.addServiceProvider(service);
+        serviceProviderRegistry.addServiceProvider(serviceClass, service);
         return uri;
-    }
-
-    @Override
-    public NameService getNameService(URI nameServiceUri) {
-        Collection<NameService> nameServices = ServiceSupport.loadAll(NameService.class);
-        for (NameService nameService : nameServices) {
-            for (String scheme : nameService.supportedSchemes()) {
-                if(scheme.equals(nameServiceUri.getScheme())) {
-                    nameService.connect(nameServiceUri);
-                    return nameService;
-                }
-            }
-        }
-        return null;
     }
 
     @Override
