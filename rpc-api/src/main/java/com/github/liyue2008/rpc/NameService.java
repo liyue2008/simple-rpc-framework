@@ -15,6 +15,7 @@ package com.github.liyue2008.rpc;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collection;
 
 /**
  * 注册中心
@@ -22,6 +23,10 @@ import java.net.URI;
  * Date: 2019/9/20
  */
 public interface NameService {
+
+    Collection<String> supportedSchemes();
+
+    void connect(URI nameServiceUri);
     /**
      * 注册服务
      * @param serviceName 服务名称

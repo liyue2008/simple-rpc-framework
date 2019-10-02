@@ -25,6 +25,7 @@ import com.github.liyue2008.rpc.transport.TransportServer;
 import java.io.Closeable;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
@@ -60,6 +61,20 @@ public class NettyRpcAccessPoint implements RpcAccessPoint {
     public synchronized <T> URI addServiceProvider(T service, Class<T> serviceClass) {
         serviceProviderRegistry.addServiceProvider(service);
         return uri;
+    }
+
+    @Override
+    public NameService getNameService(URI nameServiceUri) {
+        Collection<NameService> nameServices = ServiceSupport.loadAll(NameService.class);
+        for (NameService nameService : nameServices) {
+            for (String scheme : nameService.supportedSchemes()) {
+                if(scheme.equals(nameServiceUri.getScheme())) {
+                    nameService.connect(nameServiceUri);
+                    return nameService;
+                }
+            }
+        }
+        return null;
     }
 
     @Override

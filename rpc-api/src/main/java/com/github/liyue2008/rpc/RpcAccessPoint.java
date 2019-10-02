@@ -40,6 +40,8 @@ public interface RpcAccessPoint extends Closeable{
      */
     <T> URI addServiceProvider(T service, Class<T> serviceClass);
 
+    NameService getNameService(URI nameServiceUri);
+
     /**
      * 服务端启动RPC框架，监听接口，开始提供远程服务。
      * @return 服务实例，用于程序停止的时候安全关闭服务。

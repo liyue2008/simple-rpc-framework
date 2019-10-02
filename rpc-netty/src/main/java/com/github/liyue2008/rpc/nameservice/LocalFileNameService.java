@@ -26,6 +26,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -35,13 +37,24 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class LocalFileNameService implements NameService {
     private static final Logger logger = LoggerFactory.getLogger(LocalFileNameService.class);
-    private final File file;
+    private static final Collection<String> schemes = Collections.singleton("file");
+    private File file;
 
 
     public LocalFileNameService() {
         File tmpDirFile = new File(System.getProperty("java.io.tmpdir"));
         file = new File(tmpDirFile, "simple_rpc_name_service.data");
 
+    }
+
+    @Override
+    public Collection<String> supportedSchemes() {
+        return schemes;
+    }
+
+    @Override
+    public void connect(URI nameServiceUri) {
+        file = new File(nameServiceUri);
     }
 
     @Override

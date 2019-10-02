@@ -22,7 +22,7 @@ import java.util.List;
  * @author LiYue
  * Date: 2019/9/20
  */
-public class Metadata extends HashMap<String, List<URI>> {
+public class Metadata extends HashMap<String /*服务名*/, List<URI>/*服务提供者URI列表*/> {
 
     @Override
     public String toString() {
