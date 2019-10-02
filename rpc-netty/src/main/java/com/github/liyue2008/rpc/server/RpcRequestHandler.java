@@ -16,6 +16,7 @@ package com.github.liyue2008.rpc.server;
 import com.github.liyue2008.rpc.client.ServiceTypes;
 import com.github.liyue2008.rpc.client.stubs.RpcRequest;
 import com.github.liyue2008.rpc.serialize.SerializeSupport;
+import com.github.liyue2008.rpc.spi.Singleton;
 import com.github.liyue2008.rpc.transport.RequestHandler;
 import com.github.liyue2008.rpc.transport.command.Code;
 import com.github.liyue2008.rpc.transport.command.Command;
@@ -32,6 +33,7 @@ import java.util.List;
  * @author LiYue
  * Date: 2019/9/23
  */
+@Singleton
 public class RpcRequestHandler implements RequestHandler, ServiceProviderRegistry {
     private static final Logger logger = LoggerFactory.getLogger(RpcRequestHandler.class);
     private List<Object> serviceProviders = new LinkedList<>();

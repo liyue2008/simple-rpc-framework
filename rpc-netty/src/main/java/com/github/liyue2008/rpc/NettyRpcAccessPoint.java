@@ -15,6 +15,7 @@ package com.github.liyue2008.rpc;
 
 import com.github.liyue2008.rpc.client.StubFactory;
 import com.github.liyue2008.rpc.server.RpcRequestHandler;
+import com.github.liyue2008.rpc.server.ServiceProviderRegistry;
 import com.github.liyue2008.rpc.spi.ServiceSupport;
 import com.github.liyue2008.rpc.transport.RequestHandlerRegistry;
 import com.github.liyue2008.rpc.transport.Transport;
@@ -40,12 +41,7 @@ public class NettyRpcAccessPoint implements RpcAccessPoint {
     private TransportClient client = ServiceSupport.load(TransportClient.class);
     private final Map<URI, Transport> clientMap = new ConcurrentHashMap<>();
     private final StubFactory stubFactory = ServiceSupport.load(StubFactory.class);
-    private final RpcRequestHandler rpcRequestHandler;
-
-    public NettyRpcAccessPoint() {
-        rpcRequestHandler = new RpcRequestHandler();
-        RequestHandlerRegistry.getInstance().addRequestHandler(rpcRequestHandler);
-    }
+    private final ServiceProviderRegistry serviceProviderRegistry = ServiceSupport.load(ServiceProviderRegistry.class);
 
     @Override
     public <T> T getRemoteService(URI uri, Class<T> serviceClass) {
@@ -62,7 +58,7 @@ public class NettyRpcAccessPoint implements RpcAccessPoint {
     }
     @Override
     public synchronized <T> URI addServiceProvider(T service, Class<T> serviceClass) {
-        rpcRequestHandler.addServiceProvider(service);
+        serviceProviderRegistry.addServiceProvider(service);
         return uri;
     }
 

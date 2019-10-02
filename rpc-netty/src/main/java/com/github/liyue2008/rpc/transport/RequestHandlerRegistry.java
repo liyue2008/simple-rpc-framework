@@ -36,12 +36,12 @@ public class RequestHandlerRegistry {
         return instance;
     }
 
-    private RequestHandlerRegistry() {}
-
-    public void addRequestHandler(RequestHandler requestHandler) {
-        handlerMap.put(requestHandler.type(), requestHandler);
-        logger.info("Add request handler, type: {}, class: {}.", requestHandler.type(), requestHandler.getClass().getCanonicalName());
-
+    private RequestHandlerRegistry() {
+        Collection<RequestHandler> requestHandlers = ServiceSupport.loadAll(RequestHandler.class);
+        for (RequestHandler requestHandler : requestHandlers) {
+            handlerMap.put(requestHandler.type(), requestHandler);
+            logger.info("Load request handler, type: {}, class: {}.", requestHandler.type(), requestHandler.getClass().getCanonicalName());
+        }
     }
 
 
