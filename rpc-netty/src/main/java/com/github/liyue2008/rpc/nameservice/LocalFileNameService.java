@@ -40,13 +40,6 @@ public class LocalFileNameService implements NameService {
     private static final Collection<String> schemes = Collections.singleton("file");
     private File file;
 
-
-    public LocalFileNameService() {
-        File tmpDirFile = new File(System.getProperty("java.io.tmpdir"));
-        file = new File(tmpDirFile, "simple_rpc_name_service.data");
-
-    }
-
     @Override
     public Collection<String> supportedSchemes() {
         return schemes;
