@@ -1,6 +1,6 @@
 # 消息队列高手课：动手实现一个简单的RPC框架
 
-极客时间[《消息队列高手课》](https://time.geekbang.org/column/intro/212)案例篇《动手实现一个简单的RPC框架》示例源代码。
+极客时间[《消息队列高手课》](https://time.geekbang.org/column/intro/212)案例篇《动手实现一个简单的RPC框架》示例源代码。这个版本使用一个HSQLDB作为注册中心的服务端。
 
 ## 环境要求
 
@@ -25,6 +25,22 @@ Apache Maven 3.3.9 (bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-11T00:41:4
 $git clone git@github.com:liyue2008/simple-rpc-framework.git
 $cd simple-rpc-framework
 $mvn package
+```
+
+## 启动用于注册中心的HSQLDB数据库
+
+```bash
+$java -cp server/target/libs/hsqldb-2.5.0.jar  org.hsqldb.server.Server --database.0 file:nameservice.db --dbname.0 nameservice
+[Server@2f2c9b19]: Startup sequence initiated from main() method
+[Server@2f2c9b19]: Could not load properties from file
+[Server@2f2c9b19]: Using cli/default properties only
+[Server@2f2c9b19]: Initiating startup sequence...
+[Server@2f2c9b19]: Server socket opened successfully in 10 ms.
+[Server@2f2c9b19]: Database [index=0, id=0, db=file:nameservice.db, alias=nameservice] opened successfully in 270 ms.
+[Server@2f2c9b19]: Startup sequence completed in 281 ms.
+[Server@2f2c9b19]: 2019-10-09 06:51:19.507 HSQLDB server 2.5.0 is online on port 9001
+[Server@2f2c9b19]: To close normally, connect and execute SHUTDOWN SQL
+[Server@2f2c9b19]: From command line, use [Ctrl]+[C] to abort abruptly
 ```
 
 ## 启动服务端
@@ -173,3 +189,4 @@ server | 例子：服务端
 rpc-api | RPC框架接口
 hello-service-api | 例子：接口定义
 rpc-netty | 基于Netty实现的RPC框架
+jdbc-nameservice | 基于JDBC实现的注册中心

@@ -33,13 +33,14 @@ public class Server {
     public static void main(String [] args) throws Exception {
 
         String serviceName = HelloService.class.getCanonicalName();
-        File tmpDirFile = new File(System.getProperty("java.io.tmpdir"));
-        File file = new File(tmpDirFile, "simple_rpc_name_service.data");
+        URI nameServiceUri = URI.create("jdbc:hsqldb:hsql://localhost/nameservice");
+        System.setProperty("nameservice.jdbc.username", "SA");
+        System.setProperty("nameservice.jdbc.password", "");
         HelloService helloService = new HelloServiceImpl();
         logger.info("创建并启动RpcAccessPoint...");
         try(RpcAccessPoint rpcAccessPoint = ServiceSupport.load(RpcAccessPoint.class);
             Closeable ignored = rpcAccessPoint.startServer()) {
-            NameService nameService = rpcAccessPoint.getNameService(file.toURI());
+            NameService nameService = rpcAccessPoint.getNameService(nameServiceUri);
             assert nameService != null;
             logger.info("向RpcAccessPoint注册{}服务...", serviceName);
             URI uri = rpcAccessPoint.addServiceProvider(helloService, HelloService.class);

@@ -32,11 +32,12 @@ public class Client {
     private static final Logger logger = LoggerFactory.getLogger(Client.class);
     public static void main(String [] args) throws IOException {
         String serviceName = HelloService.class.getCanonicalName();
-        File tmpDirFile = new File(System.getProperty("java.io.tmpdir"));
-        File file = new File(tmpDirFile, "simple_rpc_name_service.data");
+        URI nameServiceUri = URI.create("jdbc:hsqldb:hsql://localhost/nameservice");
+        System.setProperty("nameservice.jdbc.username", "SA");
+        System.setProperty("nameservice.jdbc.password", "");
         String name = "Master MQ";
         try(RpcAccessPoint rpcAccessPoint = ServiceSupport.load(RpcAccessPoint.class)) {
-            NameService nameService = rpcAccessPoint.getNameService(file.toURI());
+            NameService nameService = rpcAccessPoint.getNameService(nameServiceUri);
             assert nameService != null;
             URI uri = nameService.lookupService(serviceName);
             assert uri != null;
