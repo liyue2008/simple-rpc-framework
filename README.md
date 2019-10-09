@@ -48,18 +48,14 @@ $java -cp server/target/libs/hsqldb-2.5.0.jar  org.hsqldb.server.Server --databa
 ```bash
 $java -jar server/target/server-1.0-SNAPSHOT-jar-with-dependencies.jar
 [main] INFO com.github.liyue2008.rpc.server.Server - 创建并启动RpcAccessPoint...
-[main] INFO com.github.liyue2008.rpc.transport.RequestHandlerRegistry - Load request handler, type: 0, class: com.github.liyue2008.rpc.transport.RpcRequestHandler.
+[main] INFO com.github.liyue2008.rpc.transport.RequestHandlerRegistry - Load request handler, type: 0, class: com.github.liyue2008.rpc.server.RpcRequestHandler.
+[main] INFO com.github.liyue2008.rpc.nameservice.jdbc.JdbcNameService - Database: hsqldb.
+[main] INFO com.github.liyue2008.rpc.nameservice.jdbc.JdbcNameService - Connecting to database: jdbc:hsqldb:hsql://localhost/nameservice...
+[main] INFO com.github.liyue2008.rpc.nameservice.jdbc.JdbcNameService - Maybe execute ddl to init database...
+[main] INFO com.github.liyue2008.rpc.nameservice.jdbc.JdbcNameService - Database connected.
 [main] INFO com.github.liyue2008.rpc.server.Server - 向RpcAccessPoint注册com.github.liyue2008.rpc.hello.HelloService服务...
+[main] INFO com.github.liyue2008.rpc.server.RpcRequestHandler - Add service: com.github.liyue2008.rpc.hello.HelloService, provider: com.github.liyue2008.rpc.server.HelloServiceImpl.
 [main] INFO com.github.liyue2008.rpc.server.Server - 服务名: com.github.liyue2008.rpc.hello.HelloService, 向NameService注册...
-[main] INFO com.github.liyue2008.rpc.nameservice.LocalFileNameService - Register service: com.github.liyue2008.rpc.hello.HelloService, uri: rpc://localhost:9999.
-[main] INFO com.github.liyue2008.rpc.serialize.SerializeSupport - Found serializer, class: com.github.liyue2008.rpc.nameservice.Metadata, type: 100.
-[main] INFO com.github.liyue2008.rpc.serialize.SerializeSupport - Found serializer, class: java.lang.String, type: 0.
-[main] INFO com.github.liyue2008.rpc.serialize.SerializeSupport - Found serializer, class: com.github.liyue2008.rpc.client.stubs.RpcRequest, type: 101.
-[main] INFO com.github.liyue2008.rpc.nameservice.LocalFileNameService - Metadata:
-	Classname: com.github.liyue2008.rpc.hello.HelloService
-	URIs:
-		rpc://localhost:9999
-
 [main] INFO com.github.liyue2008.rpc.server.Server - 开始提供服务，按任何键退出.
 ```
 
@@ -67,16 +63,15 @@ $java -jar server/target/server-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 ```bash
 java -jar client/target/client-1.0-SNAPSHOT-jar-with-dependencies.jar
+[main] INFO com.github.liyue2008.rpc.nameservice.jdbc.JdbcNameService - Database: hsqldb.
+[main] INFO com.github.liyue2008.rpc.nameservice.jdbc.JdbcNameService - Connecting to database: jdbc:hsqldb:hsql://localhost/nameservice...
+[main] INFO com.github.liyue2008.rpc.nameservice.jdbc.JdbcNameService - Maybe execute ddl to init database...
+[main] INFO com.github.liyue2008.rpc.nameservice.jdbc.JdbcNameService - Database connected.
+[main] INFO com.github.liyue2008.rpc.client.Client - 找到服务com.github.liyue2008.rpc.hello.HelloService，提供者: rpc://localhost:9999.
+[main] INFO com.github.liyue2008.rpc.client.Client - 请求服务, name: Master MQ...
 [main] INFO com.github.liyue2008.rpc.serialize.SerializeSupport - Found serializer, class: com.github.liyue2008.rpc.nameservice.Metadata, type: 100.
 [main] INFO com.github.liyue2008.rpc.serialize.SerializeSupport - Found serializer, class: java.lang.String, type: 0.
 [main] INFO com.github.liyue2008.rpc.serialize.SerializeSupport - Found serializer, class: com.github.liyue2008.rpc.client.stubs.RpcRequest, type: 101.
-[main] INFO com.github.liyue2008.rpc.nameservice.LocalFileNameService - Metadata:
-	Classname: com.github.liyue2008.rpc.hello.HelloService
-	URIs:
-		rpc://localhost:9999
-
-[main] INFO com.github.liyue2008.rpc.client.Client - 找到服务com.github.liyue2008.rpc.hello.HelloService，提供者: rpc://localhost:9999.
-[main] INFO com.github.liyue2008.rpc.client.Client - 请求服务, name: Master MQ...
 [main] INFO com.github.liyue2008.rpc.client.Client - 收到响应: Hello, Master MQ.
 ```
 
