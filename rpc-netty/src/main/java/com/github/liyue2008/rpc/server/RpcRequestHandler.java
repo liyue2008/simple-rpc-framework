@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,21 +36,23 @@ import java.util.Map;
 @Singleton
 public class RpcRequestHandler implements RequestHandler, ServiceProviderRegistry {
     private static final Logger logger = LoggerFactory.getLogger(RpcRequestHandler.class);
+
     private Map<String/*service name*/, Object/*service provider*/> serviceProviders = new HashMap<>();
 
     @Override
     public Command handle(Command requestCommand) {
+        logger.info("command={}", requestCommand);
         Header header = requestCommand.getHeader();
         // 从payload中反序列化RpcRequest
         RpcRequest rpcRequest = SerializeSupport.parse(requestCommand.getPayload());
         try {
             // 查找所有已注册的服务提供方，寻找rpcRequest中需要的服务
             Object serviceProvider = serviceProviders.get(rpcRequest.getInterfaceName());
-            if(serviceProvider != null) {
+            if (serviceProvider != null) {
                 // 找到服务提供者，利用Java反射机制调用服务的对应方法
                 String arg = SerializeSupport.parse(rpcRequest.getSerializedArguments());
                 Method method = serviceProvider.getClass().getMethod(rpcRequest.getMethodName(), String.class);
-                String result = (String ) method.invoke(serviceProvider, arg);
+                String result = (String) method.invoke(serviceProvider, arg);
                 // 把结果封装成响应命令并返回
                 return new Command(new ResponseHeader(type(), header.getVersion(), header.getRequestId()), SerializeSupport.serialize(result));
             }
@@ -73,7 +75,7 @@ public class RpcRequestHandler implements RequestHandler, ServiceProviderRegistr
     public synchronized <T> void addServiceProvider(Class<? extends T> serviceClass, T serviceProvider) {
         serviceProviders.put(serviceClass.getCanonicalName(), serviceProvider);
         logger.info("Add service: {}, provider: {}.",
-                serviceClass.getCanonicalName(),
-                serviceProvider.getClass().getCanonicalName());
+            serviceClass.getCanonicalName(),
+            serviceProvider.getClass().getCanonicalName());
     }
 }

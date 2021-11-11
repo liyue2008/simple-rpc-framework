@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,12 +30,14 @@ import java.net.URI;
  */
 public class Client {
     private static final Logger logger = LoggerFactory.getLogger(Client.class);
-    public static void main(String [] args) throws IOException {
+
+    public static void main(String[] args) throws IOException {
         String serviceName = HelloService.class.getCanonicalName();
-        File tmpDirFile = new File(System.getProperty("java.io.tmpdir"));
+        String properties = System.getProperty("java.io.tmpdir");
+        File tmpDirFile = new File(properties);
         File file = new File(tmpDirFile, "simple_rpc_name_service.data");
         String name = "Master MQ";
-        try(RpcAccessPoint rpcAccessPoint = ServiceSupport.load(RpcAccessPoint.class)) {
+        try (RpcAccessPoint rpcAccessPoint = ServiceSupport.load(RpcAccessPoint.class)) {
             NameService nameService = rpcAccessPoint.getNameService(file.toURI());
             assert nameService != null;
             URI uri = nameService.lookupService(serviceName);

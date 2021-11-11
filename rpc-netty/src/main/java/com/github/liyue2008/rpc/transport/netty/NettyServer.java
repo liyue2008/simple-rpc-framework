@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,15 +36,20 @@ import org.slf4j.LoggerFactory;
  */
 public class NettyServer implements TransportServer {
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
+
     private int port;
+
     private EventLoopGroup acceptEventGroup;
+
     private EventLoopGroup ioEventGroup;
+
     private Channel channel;
+
     private RequestHandlerRegistry requestHandlerRegistry;
 
     @Override
     public void start(RequestHandlerRegistry requestHandlerRegistry, int port) throws Exception {
-        this.port = port;
+        this.port                   = port;
         this.requestHandlerRegistry = requestHandlerRegistry;
         EventLoopGroup acceptEventGroup = newEventLoopGroup();
         EventLoopGroup ioEventGroup = newEventLoopGroup();
@@ -53,8 +58,8 @@ public class NettyServer implements TransportServer {
         Channel channel = doBind(serverBootstrap);
 
         this.acceptEventGroup = acceptEventGroup;
-        this.ioEventGroup = ioEventGroup;
-        this.channel = channel;
+        this.ioEventGroup     = ioEventGroup;
+        this.channel          = channel;
 
     }
 
@@ -73,8 +78,8 @@ public class NettyServer implements TransportServer {
 
     private Channel doBind(ServerBootstrap serverBootstrap) throws Exception {
         return serverBootstrap.bind(port)
-                .sync()
-                .channel();
+            .sync()
+            .channel();
     }
 
     private EventLoopGroup newEventLoopGroup() {
@@ -90,9 +95,9 @@ public class NettyServer implements TransportServer {
             @Override
             protected void initChannel(Channel channel) {
                 channel.pipeline()
-                        .addLast(new RequestDecoder())
-                        .addLast(new ResponseEncoder())
-                        .addLast(new RequestInvocation(requestHandlerRegistry));
+                    .addLast(new RequestDecoder())
+                    .addLast(new ResponseEncoder())
+                    .addLast(new RequestInvocation(requestHandlerRegistry));
             }
         };
     }
@@ -100,9 +105,9 @@ public class NettyServer implements TransportServer {
     private ServerBootstrap newBootstrap(ChannelHandler channelHandler, EventLoopGroup acceptEventGroup, EventLoopGroup ioEventGroup) {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
-                .group(acceptEventGroup, ioEventGroup)
-                .childHandler(channelHandler)
-                .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
+            .group(acceptEventGroup, ioEventGroup)
+            .childHandler(channelHandler)
+            .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
         return serverBootstrap;
     }
 

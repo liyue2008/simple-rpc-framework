@@ -39,11 +39,14 @@ public class Server {
         logger.info("创建并启动RpcAccessPoint...");
         try(RpcAccessPoint rpcAccessPoint = ServiceSupport.load(RpcAccessPoint.class);
             Closeable ignored = rpcAccessPoint.startServer()) {
+            //RPC服务链接到注册中心
             NameService nameService = rpcAccessPoint.getNameService(file.toURI());
             assert nameService != null;
             logger.info("向RpcAccessPoint注册{}服务...", serviceName);
+            //RPC服务生成URI
             URI uri = rpcAccessPoint.addServiceProvider(helloService, HelloService.class);
             logger.info("服务名: {}, 向NameService注册...", serviceName);
+            // 服务注册
             nameService.registerService(serviceName, uri);
             logger.info("开始提供服务，按任何键退出.");
             //noinspection ResultOfMethodCallIgnored

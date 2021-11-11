@@ -13,6 +13,8 @@
  */
 package com.github.liyue2008.rpc.transport.command;
 
+import java.util.Arrays;
+
 /**
  * @author LiYue
  * Date: 2019/9/20
@@ -39,5 +41,13 @@ public class Command {
 
     public void setPayload(byte [] payload) {
         this.payload = payload;
+    }
+
+    @Override
+    public String toString() {
+        return "Command{" +
+            "header=" + header +
+            ", payload=" + new String(payload) +
+            '}';
     }
 }
